@@ -3,6 +3,9 @@ package ru.itsjava;
 import org.h2.tools.Console;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import ru.itsjava.dao.UserDaoImpl;
+import ru.itsjava.domain.User;
 
 import java.sql.SQLException;
 
@@ -10,7 +13,23 @@ import java.sql.SQLException;
 public class SpringBootJdbcHomeworkApplication {
 
     public static void main(String[] args) throws SQLException {
-        SpringApplication.run(SpringBootJdbcHomeworkApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(SpringBootJdbcHomeworkApplication.class, args);
+
+        UserDaoImpl userDao = context.getBean(UserDaoImpl.class);
+        // must be 4 users
+        System.out.println("userDao.count() = " + userDao.count());
+        // insert user
+        User newUser = new User("Dart Vaider", 60);
+        userDao.insert(newUser);
+        // now must be 5 users
+        System.out.println("userDao.count() = " + userDao.count());
+        // update user
+        newUser.setName("Luke Skywalker");
+        newUser.setAge(33);
+        userDao.updateById(newUser, 5);
+        // delete user
+        User firstUser = new User("Peter Parker", 25);
+        userDao.delete(firstUser);
 
         Console.main(args);
     }
