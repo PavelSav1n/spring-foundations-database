@@ -23,10 +23,13 @@ public class SpringBootJdbcFoundationsApplication {
         studentDao.insert(newStudent);
         // +1
         System.out.println("studentDao.count() = " + studentDao.count());
+        System.out.println("studentDao.findById(5) -- new student = " + studentDao.findById(5));
 
         // Обновляем Иванова из БД (id = 1)
         Student updatedStudent = new Student("Ivanov Updated", 123);
         studentDao.updateById(updatedStudent, 1);
+
+        System.out.println("studentDao.findById(1) = " + studentDao.findById(1));
 
         // Удаляем Иванова:
         studentDao.delete(updatedStudent);

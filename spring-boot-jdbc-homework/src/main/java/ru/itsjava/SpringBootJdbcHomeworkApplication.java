@@ -30,7 +30,7 @@ public class SpringBootJdbcHomeworkApplication {
         // delete user
         User firstUser = new User("Peter Parker", 25);
         userDao.delete(firstUser);
-
+        // http://localhost:8082/ -- если окно не открывается в браузере
         Console.main(args);
     }
 
