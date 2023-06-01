@@ -21,12 +21,14 @@ public class SpringBootJdbcHomeworkApplication {
         // insert user
         User newUser = new User("Dart Vaider", 60);
         userDao.insert(newUser);
+        System.out.println("New user (userDao.findUserById(5)) = " + userDao.findUserById(5));
         // now must be 5 users
         System.out.println("userDao.count() = " + userDao.count());
         // update user
         newUser.setName("Luke Skywalker");
         newUser.setAge(33);
         userDao.updateById(newUser, 5);
+        System.out.println("Updated user (userDao.findUserById(5)) = " + userDao.findUserById(5));
         // delete user
         User firstUser = new User("Peter Parker", 25);
         userDao.delete(firstUser);
