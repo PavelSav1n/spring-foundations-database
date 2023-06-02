@@ -16,7 +16,6 @@ public class StudentDaoImplTest {
     private static final int DEFAULT_AGE = 44;
     private static final long THIRD_ID = 3L;
     private static final long SECOND_ID = 2L;
-    private static final long NEW_ID = 3L;
     private static final long FIRST_ID = 1L;
 
     @Autowired
@@ -33,7 +32,7 @@ public class StudentDaoImplTest {
     void shouldHaveCorrectMethodInsert() {
         Student expectedStudent = new Student(THIRD_ID, DEFAULT_NAME, DEFAULT_AGE);
         studentsDao.insert(expectedStudent);
-        Student actualStudent = studentsDao.findById(NEW_ID);
+        Student actualStudent = studentsDao.findById(THIRD_ID);
 
         assertEquals(expectedStudent, actualStudent);
     }
