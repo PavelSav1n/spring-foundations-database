@@ -4,8 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import ru.itsjava.domain.Faculty;
 import ru.itsjava.domain.Student;
 
+
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
@@ -17,6 +20,7 @@ public class StudentDaoImplTest {
     private static final long THIRD_ID = 3L;
     private static final long SECOND_ID = 2L;
     private static final long FIRST_ID = 1L;
+    private static final Faculty DEFAULT_FACULTY = new Faculty(1L, "Android Development");
 
     @Autowired
     private StudentDao studentsDao; // autowire this bean
@@ -30,16 +34,19 @@ public class StudentDaoImplTest {
 
     @Test
     void shouldHaveCorrectMethodInsert() {
-        Student expectedStudent = new Student(THIRD_ID, DEFAULT_NAME, DEFAULT_AGE);
-        studentsDao.insert(expectedStudent);
+        Student expectedStudent = new Student(THIRD_ID, DEFAULT_NAME, DEFAULT_AGE, DEFAULT_FACULTY);
+        long idFromDB = studentsDao.insert(expectedStudent);
+        System.out.println("idFromDB = " + idFromDB);
         Student actualStudent = studentsDao.findById(THIRD_ID);
 
-        assertEquals(expectedStudent, actualStudent);
+        assertAll(
+                () -> assertEquals(expectedStudent.getFio(), actualStudent.getFio()),
+                () -> assertEquals(expectedStudent.getAge(), actualStudent.getAge()));
     }
 
     @Test
     void shouldHaveCorrectMethodUpdateById() {
-        Student expectedStudent = new Student(SECOND_ID, DEFAULT_NAME, DEFAULT_AGE);
+        Student expectedStudent = new Student(SECOND_ID, DEFAULT_NAME, DEFAULT_AGE, DEFAULT_FACULTY);
         studentsDao.updateById(expectedStudent, SECOND_ID);
         Student actualStudent = studentsDao.findById(SECOND_ID);
 

@@ -11,4 +11,5 @@ public class Student {
     private long id;
     private final String fio;
     private final int age;
+    private final Faculty faculty;
 }

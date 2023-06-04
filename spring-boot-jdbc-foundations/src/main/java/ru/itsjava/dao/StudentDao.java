@@ -6,7 +6,8 @@ public interface StudentDao {
 
     int count();
 
-    void insert(Student student);
+    // метод будет возвращать ID студента из БД
+    long insert(Student student);
 
     void updateById(Student student, long id);
 
