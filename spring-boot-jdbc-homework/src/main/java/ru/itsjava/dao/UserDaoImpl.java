@@ -28,18 +28,17 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User insert(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        User insertedUser;
         // Есть два варианта пользователя, с петом или без:
         if (user.getPet() != null) { // если с петом, то инсертим с петом и используем конструктор с петом:
             Map<String, Object> params = Map.of("name", user.getName(), "age", user.getAge(), "pet_id", user.getPet().getId());
             jdbc.update("insert into users (name, age, pet_id) values (:name, :age, :pet_id)", new MapSqlParameterSource(params), keyHolder);
-            insertedUser = new User(keyHolder.getKey().longValue(), user.getName(), user.getAge(), user.getPet());
-        } else { // если без пета, то инсертим без и используем конструктор без:
-            Map<String, Object> params = Map.of("name", user.getName(), "age", user.getAge());
-            jdbc.update("insert into users (name, age) values (:name, :age)", new MapSqlParameterSource(params), keyHolder);
-            insertedUser = new User(keyHolder.getKey().longValue(), user.getName(), user.getAge());
+            return new User(keyHolder.getKey().longValue(), user.getName(), user.getAge(), user.getPet());
         }
-        return insertedUser;
+        // если без пета, то инсертим без и используем конструктор без:
+        Map<String, Object> params = Map.of("name", user.getName(), "age", user.getAge());
+        jdbc.update("insert into users (name, age) values (:name, :age)", new MapSqlParameterSource(params), keyHolder);
+        return new User(keyHolder.getKey().longValue(), user.getName(), user.getAge());
+
     }
 
     @Override
@@ -54,8 +53,10 @@ public class UserDaoImpl implements UserDao {
         jdbc.update("delete from users where name = :name and age = :age", params);
     }
 
-    // Ищем пользователя по id. Сначала проверяем, есть ли у него пет. Если нет, используем мапер для безпетных пользователей и возвращаем пользователя с его pet = null.
-    // Если пет есть, используем маппер для пользователей с петами и возвращаем полноценного пользователя.
+    // Ищем пользователя по id. Поскольку мы не знаем, есть ли пет у этого пользователя, используем запрос только к таблице users.
+    // Маппер смотрит, непустое ли поле pet_id и в зависимости от этого возвращает нам пользователя без пета или с подставным петом, чтобы воспользоваться другим маппером
+    // Дальше если у этого пользователя есть пет, используем запрос с джойном таблиц и маппер для пользователей с петами и возвращаем полноценного пользователя.
+    // Если нет, возвращаем безпетового пользователя.
     @Override
     public User findUserById(long id) {
         Map<String, Object> params = Map.of("id", id);
