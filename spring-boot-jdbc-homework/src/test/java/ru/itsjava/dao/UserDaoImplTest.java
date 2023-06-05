@@ -27,9 +27,7 @@ public class UserDaoImplTest {
 
     @Test
     void shouldHaveCorrectMethodCount() {
-        int actualUsersCount = userDao.count();
-
-        assertEquals(2, actualUsersCount);
+        assertEquals(2, userDao.count());
     }
 
     @Test

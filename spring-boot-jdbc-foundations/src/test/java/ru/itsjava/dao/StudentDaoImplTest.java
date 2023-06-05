@@ -27,9 +27,7 @@ public class StudentDaoImplTest {
 
     @Test
     void shouldHaveCorrectMethodCount() {
-        int actualStudentsCount = studentsDao.count();
-
-        assertEquals(2, actualStudentsCount);
+        assertEquals(2, studentsDao.count());
     }
 
     @Test
