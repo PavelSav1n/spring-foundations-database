@@ -1,17 +1,16 @@
-package ru.itsjava.dao;
+package ru.itsjava.services;
 
 import ru.itsjava.domain.User;
 
-public interface UserDao {
+public interface UserService {
 
     int count();
 
-    User insert(User user);
+    void insert(User user);
 
     void updateById(User user, long id);
 
     void delete(User user);
 
     User findUserById(long id);
-
 }

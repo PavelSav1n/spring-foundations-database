@@ -9,6 +9,7 @@ import ru.itsjava.domain.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+// Пример работы JdbcOperations без именованных параметров:
 @Repository
 @RequiredArgsConstructor
 public class UserDaoImplOldVersion implements UserDao {
@@ -20,12 +21,13 @@ public class UserDaoImplOldVersion implements UserDao {
     }
 
     @Override
-    public void insert(User user) {
+    public User insert(User user) {
         jdbc.update("insert into users (name, age) values (?, ?)", user.getName(), user.getAge());
+        return user;
     }
 
     @Override
-    public void updateById(User user, int id) {
+    public void updateById(User user, long id) {
         jdbc.update("update users set name = ?, age = ? where id = ?", user.getName(), user.getAge(), id);
     }
 

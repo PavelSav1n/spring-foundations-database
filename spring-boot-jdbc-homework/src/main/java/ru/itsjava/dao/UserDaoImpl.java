@@ -2,8 +2,12 @@ package ru.itsjava.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import ru.itsjava.domain.Pet;
 import ru.itsjava.domain.User;
 
 import java.sql.ResultSet;
@@ -20,14 +24,26 @@ public class UserDaoImpl implements UserDao {
         return jdbc.getJdbcOperations().queryForObject("select count(*) from users", Integer.class);
     }
 
+    // Когда мы вставляем в H2 DB пользователя, мы не знаем, какой id нам присвоит база, поэтому метод insert будет возвращать нам пользователя с его id в базе дынных
     @Override
-    public void insert(User user) {
-        Map<String, Object> params = Map.of("name", user.getName(), "age", user.getAge());
-        jdbc.update("insert into users (name, age) values (:name, :age)", params);
+    public User insert(User user) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        User insertedUser;
+        // Есть два варианта пользователя, с петом или без:
+        if (user.getPet() != null) { // если с петом, то инсертим с петом и используем конструктор с петом:
+            Map<String, Object> params = Map.of("name", user.getName(), "age", user.getAge(), "pet_id", user.getPet().getId());
+            jdbc.update("insert into users (name, age, pet_id) values (:name, :age, :pet_id)", new MapSqlParameterSource(params), keyHolder);
+            insertedUser = new User(keyHolder.getKey().longValue(), user.getName(), user.getAge(), user.getPet());
+        } else { // если без пета, то инсертим без и используем конструктор без:
+            Map<String, Object> params = Map.of("name", user.getName(), "age", user.getAge());
+            jdbc.update("insert into users (name, age) values (:name, :age)", new MapSqlParameterSource(params), keyHolder);
+            insertedUser = new User(keyHolder.getKey().longValue(), user.getName(), user.getAge());
+        }
+        return insertedUser;
     }
 
     @Override
-    public void updateById(User user, int id) {
+    public void updateById(User user, long id) {
         Map<String, Object> params = Map.of("id", id, "name", user.getName(), "age", user.getAge());
         jdbc.update("update users set name = :name, age = :age where id = :id", params);
     }
@@ -38,17 +54,33 @@ public class UserDaoImpl implements UserDao {
         jdbc.update("delete from users where name = :name and age = :age", params);
     }
 
+    // Ищем пользователя по id. Сначала проверяем, есть ли у него пет. Если нет, используем мапер для безпетных пользователей и возвращаем пользователя с его pet = null.
+    // Если пет есть, используем маппер для пользователей с петами и возвращаем полноценного пользователя.
     @Override
     public User findUserById(long id) {
         Map<String, Object> params = Map.of("id", id);
-        return jdbc.queryForObject("select id, name, age from users where id = :id", params, new UserMapper());
+        User userWithoutPet = jdbc.queryForObject("select id, name, age, pet_id from users where id = :id", params, new UserMapper());
+        if (userWithoutPet.getPet() != null) {
+            return jdbc.queryForObject("select u.id as UID, u.name as user_name, age, p.id as PID, species from users u, pets p where u.id = :id and pet_id = p.id", params, new UserMapperWithPets());
+        }
+        return userWithoutPet;
     }
 
 
     private static class UserMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"));
+            if (rs.getLong("pet_id") == 0) {
+                return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"));
+            }
+            return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"), new Pet(rs.getLong("pet_id"), "FOUND_PET"));
+        }
+    }
+
+    private static class UserMapperWithPets implements RowMapper<User> {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new User(rs.getLong("UID"), rs.getString("user_name"), rs.getInt("age"), new Pet(rs.getLong("PID"), rs.getString("species")));
         }
     }
 
