@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class Faculty {
-    private final long id;
-    private String name;
+    private long id;
+    private final String name;
 }

@@ -4,30 +4,30 @@ import org.h2.tools.Console;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import ru.itsjava.dao.StudentDao;
 import ru.itsjava.domain.Faculty;
 import ru.itsjava.domain.Student;
+import ru.itsjava.services.AppService;
 import ru.itsjava.services.StudentService;
-
-import java.sql.SQLException;
 
 @SpringBootApplication
 public class SpringBootJdbcFoundationsApplication {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         ConfigurableApplicationContext context = SpringApplication.run(SpringBootJdbcFoundationsApplication.class, args);
 
-        StudentService student = context.getBean(StudentService.class);
-        student.insert(new Student("Test Student", 99, new Faculty(1, "Java Development")));
+        context.getBean(AppService.class).start();
 
-
-        Student firstStudent = student.findById(1);
-        Student secondStudent = student.findById(2);
-        Student thirdStudent = student.findById(3);
-
-        System.out.println("firstStudent = " + firstStudent);
-        System.out.println("secondStudent = " + secondStudent);
-        System.out.println("thirdStudent = " + thirdStudent);
+//        StudentService student = context.getBean(StudentService.class);
+//        student.insert(new Student("Test Student", 99, new Faculty(1, "Java Development")));
+//
+//
+//        Student firstStudent = student.findById(1);
+//        Student secondStudent = student.findById(2);
+//        Student thirdStudent = student.findById(3);
+//
+//        System.out.println("firstStudent = " + firstStudent);
+//        System.out.println("secondStudent = " + secondStudent);
+//        System.out.println("thirdStudent = " + thirdStudent);
 
 
 //        StudentDao studentDao = context.getBean(StudentDao.class);

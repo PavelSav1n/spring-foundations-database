@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.itsjava.dao.StudentDao;
 import ru.itsjava.domain.Student;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
@@ -20,6 +22,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student findById(long id) {
         return studentDao.findById(id);
+    }
+
+    @Override
+    public List<Student> findAll() {
+        return studentDao.findAll();
     }
 
 

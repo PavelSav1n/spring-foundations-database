@@ -12,6 +12,7 @@ import ru.itsjava.domain.Student;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -65,10 +66,15 @@ public class StudentDaoImpl implements StudentDao {
         return jdbc.queryForObject("select s.id as s_ID, fio, age, name, f.id as f_ID from students s, faculties f where s.id = :id and faculty_id = f.id", params, new StudentMapper());
     }
 
+    @Override
+    public List<Student> findAll() {
+        return jdbc.query("select s.id as s_ID, fio, age, name, f.id as f_ID from students s, faculties f where faculty_id = f.id", new StudentMapper());
+    }
+
 
     // Для мапинга необходимо имплементировать RowMapper:
     // Обязательно проверять название столбцов результирующей таблицы запроса. Особенно с id полями разных таблиц. Лучше явно переписать алиасы, типа s_ID и f_ID
-    private static class StudentMapper implements RowMapper<Student>{
+    private static class StudentMapper implements RowMapper<Student> {
         @Override
         public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Student(rs.getLong("s_ID"), rs.getString("fio"), rs.getInt("age"), new Faculty(rs.getLong("f_ID"), rs.getString("name")));
