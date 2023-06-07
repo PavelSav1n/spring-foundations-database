@@ -2,9 +2,13 @@ package ru.itsjava.dao;
 
 import ru.itsjava.domain.User;
 
+import java.util.List;
+
 public interface UserDao {
 
     int count();
+
+    List<User> findAll();
 
     User insert(User user);
 
@@ -12,6 +16,6 @@ public interface UserDao {
 
     void delete(User user);
 
-    User findUserById(long id);
+    User findById(long id);
 
 }

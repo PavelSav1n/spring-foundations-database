@@ -12,6 +12,7 @@ import ru.itsjava.domain.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -22,6 +23,18 @@ public class UserDaoImpl implements UserDao {
     @Override
     public int count() {
         return jdbc.getJdbcOperations().queryForObject("select count(*) from users", Integer.class);
+    }
+
+    // Возвращаем список всех пользователей. Поскольку в БД могут быть пользователи без петов, то я объединил два запроса:
+    // Первый возвращает таблицу (джойн users и pets) с юзерами у которых есть петы
+    // Второй возвращает таблицу пользователей без петов и недостающие поля заполнены NULL
+    @Override
+    public List<User> findAll() {
+        return jdbc.query("""
+                SELECT u.id as UID, name AS user_name, age, pet_id, p.id AS PID, species FROM users u, pets p WHERE pet_id = p.id 
+                UNION 
+                SELECT id, name, age, pet_id, NULL, NULL FROM users where pet_id IS NULL;
+                """, new UserMapper());
     }
 
     // Когда мы вставляем в H2 DB пользователя, мы не знаем, какой id нам присвоит база, поэтому метод insert будет возвращать нам пользователя с его id в базе дынных
@@ -53,35 +66,26 @@ public class UserDaoImpl implements UserDao {
         jdbc.update("delete from users where name = :name and age = :age", params);
     }
 
-    // Ищем пользователя по id. Поскольку мы не знаем, есть ли пет у этого пользователя, используем запрос только к таблице users.
-    // Маппер смотрит, непустое ли поле pet_id и в зависимости от этого возвращает нам пользователя без пета или с подставным петом, чтобы воспользоваться другим маппером
-    // Дальше если у этого пользователя есть пет, используем запрос с джойном таблиц и маппер для пользователей с петами и возвращаем полноценного пользователя.
-    // Если нет, возвращаем безпетового пользователя.
+    // Упростил логику, потому что объединил запросы и теперь получаю всех пользователей, независимо, есть петы или нет.
+    // Сейчас UserMapper проверяет на нулевое значение поля pet_id. В зависимости от этого возвращаются пользователи с петом или без
     @Override
-    public User findUserById(long id) {
+    public User findById(long id) {
         Map<String, Object> params = Map.of("id", id);
-        User userWithoutPet = jdbc.queryForObject("select id, name, age, pet_id from users where id = :id", params, new UserMapper());
-        if (userWithoutPet.getPet() != null) {
-            return jdbc.queryForObject("select u.id as UID, u.name as user_name, age, p.id as PID, species from users u, pets p where u.id = :id and pet_id = p.id", params, new UserMapperWithPets());
-        }
-        return userWithoutPet;
-    }
+        return jdbc.queryForObject("""
+                SELECT u.id as UID, name AS user_name, age, pet_id, p.id AS PID, species FROM users u, pets p WHERE u.id = :id and pet_id = p.id 
+                UNION 
+                SELECT id, name, age, pet_id, NULL, NULL FROM users where id = :id and pet_id IS NULL;
+                """, params, new UserMapper());
 
+    }
 
     private static class UserMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            if (rs.getLong("pet_id") == 0) {
-                return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"));
+            if (rs.getLong("PID") != 0) { // проверка на наличие пета
+                return new User(rs.getLong("UID"), rs.getString("user_name"), rs.getInt("age"), new Pet(rs.getLong("PID"), rs.getString("species")));
             }
-            return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"), new Pet(rs.getLong("pet_id"), "FOUND_PET"));
-        }
-    }
-
-    private static class UserMapperWithPets implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(rs.getLong("UID"), rs.getString("user_name"), rs.getInt("age"), new Pet(rs.getLong("PID"), rs.getString("species")));
+            return new User(rs.getLong("UID"), rs.getString("user_name"), rs.getInt("age"));
         }
     }
 

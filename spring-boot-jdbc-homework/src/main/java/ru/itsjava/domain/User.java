@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor // for UserDaoImpl.findUserById
 public class User {
-    // All field can be changed in future
+    // All fields can be changed in future
     private long id; // will be filled from H2 DB
     private String name;
     private int age;

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.domain.User;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
@@ -22,8 +24,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void insert(User user) {
-        userDao.insert(user);
+    public List<User> findAll() {
+        return userDao.findAll();
+    }
+
+    @Override
+    public User insert(User user) {
+        return userDao.insert(user);
     }
 
     @Override
@@ -38,6 +45,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(long id) {
-        return userDao.findUserById(id);
+        return userDao.findById(id);
     }
 }

@@ -8,6 +8,7 @@ import ru.itsjava.domain.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 // Пример работы JdbcOperations без именованных параметров:
 @Repository
@@ -18,6 +19,11 @@ public class UserDaoImplOldVersion implements UserDao {
     @Override
     public int count() {
         return jdbc.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return null;
     }
 
     @Override
@@ -37,7 +43,7 @@ public class UserDaoImplOldVersion implements UserDao {
     }
 
     @Override
-    public User findUserById(long id) {
+    public User findById(long id) {
         // не нашёл конструктор, который принимал бы параметры в интерфейсе JdbcOperations.queryForObject, поэтому вот так:
         String query = "select id, name, age from users where id = " + id;
         return jdbc.queryForObject(query, new UserMapper());
