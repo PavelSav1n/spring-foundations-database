@@ -17,7 +17,6 @@ public class UserDaoImplTest {
     public static final String DEFAULT_USER = "Inserted User";
     public static final int DEFAULT_AGE = 55;
     public static final int FIRST_ID = 1;
-    public static final long THIRD_ID = 3L;
     public static final int FIRST_USER_AGE = 22; // actual data from data.sql
     public static final String FIRST_USER_NAME = "Test Man 1"; // actual data from data.sql
     public static final Pet DEFAULT_PET = new Pet(1, "dog"); // actual data from data.sql
@@ -33,17 +32,12 @@ public class UserDaoImplTest {
     @Test
     void shouldHaveCorrectMethodInsert() {
         // Проверяем пользователя без пета:
-        User expectedUserWithoutPet = new User(THIRD_ID, DEFAULT_USER, DEFAULT_AGE);
-        userDao.insert(expectedUserWithoutPet);
-        User actualUserWithoutPet = userDao.findById(THIRD_ID);
-        System.out.println("expectedUserWithoutPet = " + expectedUserWithoutPet);
-        System.out.println("actualUserWithoutPet = " + actualUserWithoutPet);
+        User expectedUserWithoutPet = userDao.insert(new User(DEFAULT_USER, DEFAULT_AGE)); // возвращаем пользователя с актуальным id из БД
+        User actualUserWithoutPet = userDao.findById(expectedUserWithoutPet.getId());
+
         // Проверяем пользователя с петом:
-        User expectedUserWithPet = new User(4, DEFAULT_USER, DEFAULT_AGE, DEFAULT_PET);
-        userDao.insert(expectedUserWithPet);
-        User actualUserWithPet = userDao.findById(4);
-        System.out.println("expectedUserWithPet = " + expectedUserWithPet);
-        System.out.println("actualUserWithPet = " + actualUserWithPet);
+        User expectedUserWithPet = userDao.insert(new User(DEFAULT_USER, DEFAULT_AGE, DEFAULT_PET)); // возвращаем пользователя с актуальным id из БД
+        User actualUserWithPet = userDao.findById(expectedUserWithPet.getId());
 
         assertAll(() -> assertEquals(expectedUserWithoutPet, actualUserWithoutPet),
                 () -> assertEquals(expectedUserWithPet, actualUserWithPet));
@@ -51,9 +45,9 @@ public class UserDaoImplTest {
 
     @Test
     void shouldHaveCorrectMethodUpdateById() {
-        User expectedUser = new User(FIRST_ID, DEFAULT_USER, DEFAULT_AGE, DEFAULT_PET);
-        userDao.updateById(expectedUser, FIRST_ID);
-        User actualUser = userDao.findById(FIRST_ID);
+        User expectedUser = userDao.insert(new User(DEFAULT_USER, DEFAULT_AGE, DEFAULT_PET));
+        userDao.updateById(expectedUser, expectedUser.getId());
+        User actualUser = userDao.findById(expectedUser.getId());
         assertEquals(expectedUser, actualUser);
     }
 

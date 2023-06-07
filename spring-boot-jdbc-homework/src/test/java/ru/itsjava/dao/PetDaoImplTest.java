@@ -11,13 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-@JdbcTest // Если использовать @SpringBootTest, то для каждого теста ниже будет использована одна и та же БД. @JdbcTest видимо создаёт отдельные копии и изменения БД в одном тесте, не влияют на БД в другой, за исключение инкремента keyholder'а
+@JdbcTest // Если использовать @SpringBootTest, то для каждого теста ниже будет использована одна и та же БД. @JdbcTest так же использует одна и та же база в рамках работы программы теста, однако перед каждым методом откатывает изменения. При этом KeyHolder инкрементится.
 @Import(PetDaoImpl.class)
 public class PetDaoImplTest {
 
     public static final String DEFAULT_SPECIES = "Inserted Pet Species";
     public static final long FIRST_ID = 1L;
-    public static final long THIRD_ID = 3L;
     public static final String FIRST_PET_SPECIES = "dog"; // actual data from data.sql
 
     @Autowired
@@ -56,10 +55,11 @@ public class PetDaoImplTest {
     @DisplayName("Проверка delete()")
     void shouldHaveCorrectMethodDelete() {
         // Мы не можем удалять петов, если у них есть хозяин. Поэтому создаём пета у которого нет хозяина:
-        Pet petToBeDeleted = new Pet(THIRD_ID, "Elephant");
-        petDao.insert(petToBeDeleted);
-        Pet deletedPet = petDao.delete(THIRD_ID);
+        Pet newPet = new Pet("Elephant");
+        newPet = petDao.insert(newPet); // тут возвращается тот же самый пет, только с id из базы.
+        Pet deletedPet = petDao.delete(newPet.getId()); // явно указываем id удаляемого пета
         System.out.println("deletedPet = " + deletedPet);
+        Pet petToBeDeleted = newPet;
 
         assertAll(() -> assertEquals(petToBeDeleted, deletedPet),
                 () -> assertEquals(2, petDao.count()));
