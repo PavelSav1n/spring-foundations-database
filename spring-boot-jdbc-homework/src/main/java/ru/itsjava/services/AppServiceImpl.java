@@ -1,19 +1,24 @@
 package ru.itsjava.services;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.itsjava.domain.Pet;
 import ru.itsjava.domain.User;
 
-import java.util.List;
-
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class AppServiceImpl implements AppService {
     private final IOService ioService;
     private final UserService userService;
     private final PetService petService;
+
+    @Autowired
+    public AppServiceImpl(IOService ioService, UserService userService, PetService petService) {
+        this.ioService = ioService;
+        this.userService = userService;
+        this.petService = petService;
+    }
 
 
     @Override
@@ -71,7 +76,7 @@ public class AppServiceImpl implements AppService {
         try { // если введён корректный ID пета, то создаём пользователя с петом
             Pet usersPet = petService.findById(usersPetID);
             User newUser = new User(userName, userAge, usersPet);
-            userService.insert(newUser);
+            newUser = userService.insert(newUser);
             System.out.println(newUser + " added successfully!");
 
         } catch (EmptyResultDataAccessException exception) {
@@ -85,7 +90,7 @@ public class AppServiceImpl implements AppService {
         System.out.println("\nAdding new Pet...");
         System.out.println("Enter species of a new Pet:");
         String petsSpecies = ioService.input();
-        petService.insert(new Pet(petsSpecies));
-        System.out.println(petsSpecies + " added successfully!");
+        Pet newPet = petService.insert(new Pet(petsSpecies));
+        System.out.println(newPet + " added successfully!");
     }
 }

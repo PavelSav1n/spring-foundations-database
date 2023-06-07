@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,30 +18,38 @@ public class IOServiceImplTest {
     static class MyConfiguration {
 
         public static final String CONTROL_INPUT_STRING = "Hello"; // строка, которую будем вводить в конструктор через byteArrayInputStream
-        public static final Integer CONTROL_INPUT_INT = 1;
-        private final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(CONTROL_INPUT_STRING.getBytes()); // input stream для конструктора
-//        private final ByteArrayInputStream byteArrayInputStreamInt = new ByteArrayInputStream(new byte[]{CONTROL_INPUT_INT.byteValue()}); // input stream для конструктора
+        public static final String CONTROL_INPUT_INT = "1"; // В консоли мы вводим не int, а string, поэтому тут тоже строка
+        public static final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(CONTROL_INPUT_STRING.getBytes()); // input stream для конструктора
+        public static final ByteArrayInputStream byteArrayInputStreamInt = new ByteArrayInputStream(CONTROL_INPUT_INT.getBytes()); // input stream для конструктора
 
         @Bean // конфигурируем бин, на котором будем вызывать проверяемый метод input()
-        public IOService ioService() {
-            System.out.println("Конструктор из теста ioService ");
+        public IOService ioServiceString() {
+            System.out.println("Конструктор ioServiceString из теста IOServiceImplTest");
             return new IOServiceImpl(byteArrayInputStream);
+        }
+
+        @Bean // конфигурируем бин, на котором будем вызывать проверяемый метод input()
+        public IOService ioServiceInt() {
+            System.out.println("Конструктор ioServiceInt из теста IOServiceImplTest");
+            return new IOServiceImpl(byteArrayInputStreamInt);
         }
     }
 
     @Autowired
-    private IOService ioService;
+    private IOService ioServiceString;
+    @Autowired
+    private IOService ioServiceInt;
 
     @Test
     @DisplayName("Проверка input()")
     public void shouldHaveCorrectMethodInput() {
-        assertEquals(MyConfiguration.CONTROL_INPUT_STRING, ioService.input());
+        assertEquals(MyConfiguration.CONTROL_INPUT_STRING, ioServiceString.input());
     }
 
-//    @Test
-//    @DisplayName("Проверка inputInt()")
-//    public void shouldHaveCorrectMethodInputInt() {
-//        assertEquals(MyConfiguration.CONTROL_INPUT_INT, ioService.inputInt());
-//    }
+    @Test
+    @DisplayName("Проверка inputInt()")
+    public void shouldHaveCorrectMethodInputInt() {
+        assertEquals(1, ioServiceInt.inputInt());
+    }
 
 }
