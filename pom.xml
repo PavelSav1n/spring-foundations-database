@@ -13,6 +13,7 @@
         <module>spring-boot-jdbc-foundations</module>
         <module>spring-boot-jdbc-homework</module>
         <module>spring-boot-jpa-foundations</module>
+        <module>spring-boot-jpa-homework</module>
     </modules>
 
     <properties>
