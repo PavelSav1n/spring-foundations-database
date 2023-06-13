@@ -1,15 +1,17 @@
 package ru.itsjava.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
-@Entity(name = "Films")
+@Data
+@Entity(name = "films")
 public class Film {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id1;
+    private long id;
 
     private String title;
 
