@@ -1,4 +1,4 @@
-package ru.itsjava.domain.repository;
+package ru.itsjava.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -13,7 +13,7 @@ public class GenreRepositoryImpl implements GenreRepository {
     private final EntityManager entityManager;
 
     @Override
-    public Genre getByID(long id) {
+    public Genre getById(long id) {
         return entityManager.find(Genre.class, id);
     }
 

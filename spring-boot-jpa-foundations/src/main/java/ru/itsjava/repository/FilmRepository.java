@@ -1,4 +1,4 @@
-package ru.itsjava.domain.repository;
+package ru.itsjava.repository;
 
 import ru.itsjava.domain.Film;
 

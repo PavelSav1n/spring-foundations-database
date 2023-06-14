@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.itsjava.domain.Pet;
-import ru.itsjava.domain.User;
 
 import java.util.List;
 
