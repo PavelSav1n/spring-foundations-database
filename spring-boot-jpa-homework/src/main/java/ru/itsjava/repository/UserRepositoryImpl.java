@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByID(long id) {
+    public User findById(long id) {
         return entityManager.find(User.class, id);
     }
 
@@ -41,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findAllWithPets() {
-        return entityManager.createQuery("SELECT u FROM users u JOIN FETCH u.pets", User.class).getResultList();
+        return entityManager.createQuery("SELECT DISTINCT u FROM users u JOIN FETCH u.pets", User.class).getResultList();
     }
 
     @Override
@@ -51,6 +51,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(long id) {
-        entityManager.remove(findByID(id));
+        entityManager.remove(findById(id));
     }
 }

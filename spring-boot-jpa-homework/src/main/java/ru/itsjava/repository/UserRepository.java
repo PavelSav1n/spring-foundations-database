@@ -8,7 +8,7 @@ public interface UserRepository {
     // CRUD
     void insert(User user);
 
-    User findByID(long id);
+    User findById(long id);
 
     List<User> findAll();
 

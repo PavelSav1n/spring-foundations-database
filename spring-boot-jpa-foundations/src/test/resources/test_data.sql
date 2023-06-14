@@ -1,4 +1,4 @@
-    INSERT INTO genre (name) VALUES
+INSERT INTO genre (name) VALUES
 ('drama'),
 ('thriller'),
 ('horror');

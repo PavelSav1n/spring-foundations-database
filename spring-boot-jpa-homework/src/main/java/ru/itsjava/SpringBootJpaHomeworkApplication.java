@@ -1,6 +1,5 @@
 package ru.itsjava;
 
-import org.h2.tools.Console;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,7 +9,6 @@ import ru.itsjava.repository.PetRepository;
 import ru.itsjava.repository.UserRepository;
 
 import java.sql.SQLException;
-import java.util.List;
 
 @SpringBootApplication
 public class SpringBootJpaHomeworkApplication {
@@ -21,7 +19,7 @@ public class SpringBootJpaHomeworkApplication {
         UserRepository userRepository = context.getBean(UserRepository.class);
 
         System.out.println("**************** findByID test **************");
-        System.out.println("userRepository.findByID(1L) = " + userRepository.findByID(1L));
+        System.out.println("userRepository.findByID(1L) = " + userRepository.findById(1L));
 
         System.out.println("**************** insert + findAll test **************");
         User testUser = new User(0L, "TestUser", 99);
@@ -29,7 +27,7 @@ public class SpringBootJpaHomeworkApplication {
         printAllUsers(userRepository); // findAll() test
 
         System.out.println("**************** update test **************");
-        User userToBeUpdated = userRepository.findByID(1L);
+        User userToBeUpdated = userRepository.findById(1L);
         userToBeUpdated.setName("UPDATED NAME");
         userRepository.update(userToBeUpdated);
         printAllUsers(userRepository);
@@ -41,7 +39,7 @@ public class SpringBootJpaHomeworkApplication {
         System.out.println("#################### pet repository test ####################");
         PetRepository petRepository = context.getBean(PetRepository.class);
         System.out.println("**************** findByID test **************");
-        System.out.println("petRepository.findByID(1L) = " + petRepository.findByID(1L));
+        System.out.println("petRepository.findByID(1L) = " + petRepository.findById(1L));
 
         System.out.println("**************** insert + findAll test **************");
         Pet testPet = new Pet(0L, "TestPet", 1);
@@ -49,7 +47,7 @@ public class SpringBootJpaHomeworkApplication {
         printAllPets(petRepository); // findAll() test
 
         System.out.println("**************** update test **************");
-        Pet petToBeUpdated = petRepository.findByID(1L);
+        Pet petToBeUpdated = petRepository.findById(1L);
         petToBeUpdated.setSpecies("UPDATED NAME");
         petRepository.update(petToBeUpdated);
         printAllPets(petRepository);

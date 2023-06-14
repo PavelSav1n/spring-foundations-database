@@ -24,7 +24,7 @@ public class PetRepositoryImpl implements PetRepository {
     }
 
     @Override
-    public Pet findByID(long id) {
+    public Pet findById(long id) {
         return entityManager.find(Pet.class, id);
     }
 
@@ -40,6 +40,6 @@ public class PetRepositoryImpl implements PetRepository {
 
     @Override
     public void delete(long id) {
-        entityManager.remove(findByID(id));
+        entityManager.remove(findById(id));
     }
 }

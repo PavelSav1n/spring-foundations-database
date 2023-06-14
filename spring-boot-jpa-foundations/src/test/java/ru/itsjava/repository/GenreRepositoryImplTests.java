@@ -42,7 +42,7 @@ public class GenreRepositoryImplTests {
         genreToUpdate.setName("CHANGED_GENRE_NAME");
         genreRepository.update(genreToUpdate);
 
-        Assertions.assertEquals("CHANGED_GENRE_NAME", genreToUpdate.getName());
+        Assertions.assertEquals("CHANGED_GENRE_NAME", genreRepository.getById(2L).getName());
     }
 
     @Test
