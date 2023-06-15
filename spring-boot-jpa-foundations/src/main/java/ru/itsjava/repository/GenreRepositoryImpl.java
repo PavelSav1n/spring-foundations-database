@@ -8,7 +8,7 @@ import ru.itsjava.domain.Genre;
 
 @Repository
 @RequiredArgsConstructor
-@Transactional // хз зачем это, но без неё ругается на небезопасный persist
+@Transactional // переместили фукцию этой аннотации в файл конфигурации
 public class GenreRepositoryImpl implements GenreRepository {
     private final EntityManager entityManager;
 

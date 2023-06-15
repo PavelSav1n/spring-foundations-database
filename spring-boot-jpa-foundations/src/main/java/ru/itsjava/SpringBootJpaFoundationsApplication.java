@@ -1,5 +1,6 @@
 package ru.itsjava;
 
+import org.h2.tools.Console;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -47,7 +48,7 @@ public class SpringBootJpaFoundationsApplication {
         }
 
         System.out.println("genreRepository.getByID(4L) = " + genreRepository.getById(4L));
-//        Console.main(args);
+        Console.main(args);
     }
 
 }
