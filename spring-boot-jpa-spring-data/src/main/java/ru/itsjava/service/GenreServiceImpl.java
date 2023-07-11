@@ -16,9 +16,11 @@ public class GenreServiceImpl implements GenreService {
     public void changeGenreByName(String oldName, String newName) {
         Genre genreToBeUpdated = genreRepository.getByName(oldName).get();
         genreToBeUpdated.setName(newName);
+        genreRepository.save(genreToBeUpdated); // короче почему-то работает и без сохранения. Тут написано, что из-за одной сессии -- https://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/objectstate.html#objectstate-modifying
         System.out.println("Successfully updated!");
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void printGenreByName(String genreName) {
         System.out.println(genreRepository.getByName(genreName).get());

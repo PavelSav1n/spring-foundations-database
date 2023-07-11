@@ -20,6 +20,6 @@ public class Film {
     private Genre genre;
 
     @OneToMany(targetEntity = Place.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "film_id") // как эта колонка будет называться в таблице pace в БД
+    @JoinColumn(name = "film_id") // как эта колонка будет называться в таблице place в БД
     private List<Place> places;
 }

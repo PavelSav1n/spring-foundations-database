@@ -8,7 +8,7 @@ import ru.itsjava.domain.Genre;
 
 @Repository
 @RequiredArgsConstructor
-@Transactional // переместили фукцию этой аннотации в файл конфигурации
+@Transactional // переместили функцию этой аннотации в файл конфигурации
 public class GenreRepositoryImpl implements GenreRepository {
     private final EntityManager entityManager;
 

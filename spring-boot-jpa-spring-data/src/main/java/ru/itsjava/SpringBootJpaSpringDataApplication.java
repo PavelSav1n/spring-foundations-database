@@ -22,8 +22,10 @@ public class SpringBootJpaSpringDataApplication {
         GenreService genreService = context.getBean(GenreService.class);
         genreService.changeGenreByName("fantasy", "CHANGED_GENRE_FANTASY");
         genreService.printGenreByName("CHANGED_GENRE_FANTASY");
+        filmService.printAllFilms();
 
         // Это для меня
+        // Если мы не используем в сервисах @Transactional то
         // в application.properties необходимо установить флаг spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
 //        JpaDataExamples jpaDataExamples = context.getBean(JpaDataExamples.class);
 //        jpaDataExamples.printAllJpaDataExamples();
