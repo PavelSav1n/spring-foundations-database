@@ -5,9 +5,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import ru.itsjava.domain.Film;
+import ru.itsjava.domain.Genre;
+import ru.itsjava.domain.Place;
 import ru.itsjava.jpadataexamples.JpaDataExamples;
 import ru.itsjava.service.FilmService;
 import ru.itsjava.service.GenreService;
+
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class SpringBootJpaSpringDataApplication {
@@ -20,9 +25,16 @@ public class SpringBootJpaSpringDataApplication {
         filmService.printAllFilms();
 
         GenreService genreService = context.getBean(GenreService.class);
-        genreService.changeGenreByName("fantasy", "CHANGED_GENRE_FANTASY");
-        genreService.printGenreByName("CHANGED_GENRE_FANTASY");
+        genreService.printAll();
+
+
+
+        Film film = new Film(0L, "Test", genreService.getById(1), null);
+        filmService.create(film);
+
+        filmService.findById(3);
         filmService.printAllFilms();
+
 
         // Это для меня
         // Если мы не используем в сервисах @Transactional то

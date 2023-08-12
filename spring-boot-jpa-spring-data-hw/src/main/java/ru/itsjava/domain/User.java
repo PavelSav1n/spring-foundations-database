@@ -27,4 +27,10 @@ public class User {
         this.name = name;
         this.age = age;
     }
+
+    public User(String name, int age, List<Pet> petList) {
+        this.name = name;
+        this.age = age;
+        this.pets = petList;
+    }
 }

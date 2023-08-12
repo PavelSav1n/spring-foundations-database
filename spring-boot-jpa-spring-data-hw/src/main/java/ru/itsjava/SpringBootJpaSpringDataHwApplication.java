@@ -13,6 +13,7 @@ import ru.itsjava.services.PetService;
 import ru.itsjava.services.UserService;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class SpringBootJpaSpringDataHwApplication {
@@ -28,10 +29,16 @@ public class SpringBootJpaSpringDataHwApplication {
         userService.printAll();
 
         // some changes:
-        petService.create(new Pet(5L,"elephant", 4L));
+        Pet elephantFromPersist = petService.create(new Pet(5L, "elephant", 4L));
         User userToBeUpdated = userService.findById(1L);
         userToBeUpdated.setName("Frodo Baggins");
         userService.update(userToBeUpdated);
+
+        ArrayList<Pet> petArrayList = new ArrayList<>();
+        petArrayList.add(elephantFromPersist);
+
+        // will not work because detached entity passed to persist: ru.itsjava.domain.Pet
+//        userService.create(new User(0L, "UserWithPet", 999, petArrayList));
 
         // voila:
         System.out.println();

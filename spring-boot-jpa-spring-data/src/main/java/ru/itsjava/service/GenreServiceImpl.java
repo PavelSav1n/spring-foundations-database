@@ -25,4 +25,14 @@ public class GenreServiceImpl implements GenreService {
     public void printGenreByName(String genreName) {
         System.out.println(genreRepository.getByName(genreName).get());
     }
+
+    @Override
+    public void printAll() {
+        genreRepository.findAll().forEach(System.out::println);
+    }
+
+    @Override
+    public Genre getById(long id) {
+        return genreRepository.findById(id).get();
+    }
 }

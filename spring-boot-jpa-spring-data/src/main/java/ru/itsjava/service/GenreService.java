@@ -8,5 +8,11 @@ public interface GenreService {
 
     void printGenreByName(String name);
 
+    // crud
+
+    void printAll();
+
+    Genre getById(long id);
+
 
 }

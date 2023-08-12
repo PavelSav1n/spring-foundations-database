@@ -7,6 +7,7 @@ import ru.itsjava.domain.Film;
 import ru.itsjava.repository.FilmRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,4 +24,18 @@ public class FilmServiceImpl implements FilmService {
         }
 
     }
+
+    // crud
+
+    @Override
+    public Film create(Film film) {
+        return filmRepository.save(film);
+    }
+
+    @Override
+    public Optional<Film> findById(long id) {
+        return filmRepository.findById(id);
+    }
+
+
 }

@@ -1,11 +1,15 @@
 package ru.itsjava.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "films")
 public class Film {
 
@@ -15,7 +19,7 @@ public class Film {
 
     private String title;
 
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
