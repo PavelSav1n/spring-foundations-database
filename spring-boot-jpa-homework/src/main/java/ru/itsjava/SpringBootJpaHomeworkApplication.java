@@ -1,5 +1,6 @@
 package ru.itsjava;
 
+import org.h2.tools.Console;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -56,8 +57,24 @@ public class SpringBootJpaHomeworkApplication {
         petRepository.delete(5L);
         printAllPets(petRepository);
 
+        System.out.println("**************** users with pets test **************");
+        printUsersWithPets(userRepository);
 
-//        Console.main(args);
+
+        System.out.println("**************** users without pets test **************");
+        printUsersWithoutPets(userRepository);
+
+        // Everything was tested allready.
+
+        Console.main(args);
+    }
+
+    private static void printUsersWithoutPets(UserRepository userRepository) {
+        userRepository.findAllWithoutPets().forEach(System.out::println);
+    }
+
+    private static void printUsersWithPets(UserRepository userRepository) {
+        userRepository.findAllWithPets().forEach(System.out::println);
     }
 
     private static void printAllUsers(UserRepository userRepository) {
